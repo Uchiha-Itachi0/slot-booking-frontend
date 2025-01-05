@@ -47,6 +47,14 @@ const Home = () => {
     setSelectedDate(event.target.value);
   };
 
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   return (
       <div className="container mx-auto w-[50vw] shadow-2xl rounded-2xl mt-20 p-8">
         <h1 className="text-3xl font-bold text-center mb-6">Slot Booking</h1>
@@ -56,6 +64,7 @@ const Home = () => {
         <input
             type="date"
             id="date"
+            min={getTodayDate()}
             onChange={handleDateChange}
             className="p-2 border border-gray-300 rounded"
         />
