@@ -14,6 +14,7 @@ type Slot = {
 const Home = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
+  const [loading, setLoading] = useState<boolean>(false); // Add loading state
 
   useEffect(() => {
     if (selectedDate) {
@@ -22,11 +23,14 @@ const Home = () => {
   }, [selectedDate]);
 
   const fetchAvailableSlots = async (date: string) => {
+    setLoading(true); // Set loading to true before fetching
     try {
       const response = await axios.get(`/api/slots?date=${date}`);
       setAvailableSlots(response.data);
     } catch (error) {
       console.error('Error fetching available slots:', error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
     }
   };
 
@@ -70,9 +74,13 @@ const Home = () => {
           />
         </div>
 
-        {selectedDate && (
+        {loading ? (
+            <p className="text-center">Loading...</p>
+        ) : selectedDate && (
             <div>
-              <h2 className="text-xl sm:text-2xl mb-2 sm:mb-4">Available Slots for {format(new Date(selectedDate), 'MMMM dd, yyyy')}</h2>
+              <h2 className="text-xl sm:text-2xl mb-2 sm:mb-4">
+                Available Slots for {format(new Date(selectedDate), 'MMMM dd, yyyy')}
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
                 {availableSlots.length === 0 ? (
                     <p className="col-span-full text-center">No available slots</p>
@@ -81,7 +89,7 @@ const Home = () => {
                         <div
                             key={index}
                             className={`${slot.booked ? 'line-through cursor-not-allowed bg-gray-200' : 'cursor-pointer bg-gray-100 hover:bg-gray-300'} p-3 sm:p-4 rounded shadow-md`}
-                            {...(!slot.booked && {onClick: () => handleBooking(slot)})}
+                            {...(!slot.booked && { onClick: () => handleBooking(slot) })}
                         >
                           <p className="text-sm sm:text-lg">
                             {formatTime(slot.start)} - {formatTime(slot.end)}
@@ -93,7 +101,6 @@ const Home = () => {
             </div>
         )}
       </div>
-
   );
 };
 
