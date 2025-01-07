@@ -14,7 +14,7 @@ type Slot = {
 const Home = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); // Add loading state
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedDate) {
@@ -23,14 +23,14 @@ const Home = () => {
   }, [selectedDate]);
 
   const fetchAvailableSlots = async (date: string) => {
-    setLoading(true); // Set loading to true before fetching
+    setLoading(true);
     try {
       const response = await axios.get(`/api/slots?date=${date}`);
       setAvailableSlots(response.data);
     } catch (error) {
       console.error('Error fetching available slots:', error);
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false);
     }
   };
 
